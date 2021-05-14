@@ -1,3 +1,4 @@
+![Logo](/logo.png)
 # Kawaii API | The random Image API for Discord Bots
 Simple API requests with many output customizations, access to over 1k images and a dashboard with statistics as well as useful information.
 
