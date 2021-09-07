@@ -1,5 +1,5 @@
 > # Kawaii API | C# example
-> An example of how to use the api by https://github.com/LedgendODST
+> An example of how to use the api by [LedgendODST](https://github.com/LedgendODST)
 > 
 > ### Instructions.
 > To run the code the following libary is needed: ChilkatDnCore
