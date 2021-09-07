@@ -1,47 +1,69 @@
-﻿using System.Net.Http;
+using System;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
-using Disqord;
-using Disqord.Bot;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
-using Qmmands;
 
-namespace ProjectName
+namespace KawaiiAPI_Request_Example
 {
-    public class ActionModule : DiscordModuleBase<DiscordGuildCommandContext>
+    //Creates a new IHostedService.
+    public class PrintApiDetails : IHostedService
     {
+        public PrintApiDetails(HttpClient client)
+        {
+            //Sets the HttpClient via DI
+            Client = client;
+        }
+
+        //Gets the Base HTTClient and inject it into the Class
         public HttpClient Client { get; set; }
 
-        public class KawaiiRedAPI
+        public class KawaiiRedApi
         {
+            //Our Json Model which we use to get our response
             [JsonProperty("response")]
-            public string response { get; set; }
+            //our Json property
+            public string Response { get; set; }
         }
-        public async Task<string> HandleWebsiteStringAsync(string actiontype)
+
+        public async Task<string> HandleWebsiteStringAsync(string main, string actiontype, int[] filters)
         {
+            //Our Handle Request gets Created.
             var http = new Chilkat.Http();
-            
+
+            //Sets FollowRedirects to true so we can handle our Request.
             http.FollowRedirects = true;
 
-            var apitoken = "token";
-            var website = $"http://kawaii.red/api/gif/{actiontype}/token={apitoken}";
-            
+            //Your Own API Token.
+            var kawaii_token = "";
+
+            //The Website which we can modify.
+            var website = $"https://kawaii.red/api/{main}/{actiontype}/token={kawaii_token}&filter={filters}";
+
+            //Make the request and get the Redirect page.
             http.QuickGet(website);
 
+            //Check if we got Redirected else return null.
             if (!http.WasRedirected) return null;
-            var web = await Client.GetFromJsonAsync<KawaiiRedAPI>(http.FinalRedirectUrl);
 
-            return web?.response;
+            //the actually Redirected website and deserialize the string result.
+            var web = await Client.GetFromJsonAsync<KawaiiRedApi>(http.FinalRedirectUrl);
+
+            //Returns the actually Response our end website Link.
+            return web?.Response;
         }
-        [Command("kill"), Description("Kill somebody")]
-        public async Task<DiscordCommandResult> KillApi(IMember member = null)
+
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            if (member is null) return Response("Member not found pls ping a member first.");
-            var embed = new LocalEmbed();
-            var gif = await HandleWebsiteStringAsync("kill");
-            embed.WithImageUrl(gif);
-            embed.WithTitle($"{Context.Author.Name} killed {member.Name}");
-            return Response(embed);
+            //Create our WebRequest String and print the output.
+            var websiteStringAsync = await HandleWebsiteStringAsync("gif", "kiss", new int[] { });
+
+            //prints the output from the string.
+            Console.WriteLine(websiteStringAsync);
         }
+
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }
