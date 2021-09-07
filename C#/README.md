@@ -4,3 +4,4 @@
 > ### Instructions.
 > To run the code the following libary is needed: ChilkatDnCore
 > (dotnet add package ChilkatDnCore --version 9.5.0.88)
+> Go to https://github.com/LedgendODST/Kawaii.API_Dotnet_Example for all important files
