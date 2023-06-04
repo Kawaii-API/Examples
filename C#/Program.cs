@@ -2,7 +2,6 @@
     using System;
     using System.Net.Http;
     using System.Net.Http.Json;
-    using KawaiiAPI_Request_Example;
 
     //Make the request and make the actually call.
     using (var client = new HttpClient())
@@ -21,8 +20,8 @@
             //check if the response is not null
             if (response is not null)
             {
-                //print our final image into the Console.
-                Console.WriteLine($"Image is | {response.Response}");
+                // image url
+                var imageurl = response.Response
             }
         }
         catch (Exception e)
